@@ -39,10 +39,18 @@ public class BasicGameApp implements Runnable {
 
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
+	public Image alienPic;
+
+	public Image spacePic;
 
 	//Declare the objects used in the program
 	//These are things that are made up of more than one variable type
 	private Astronaut astro;
+	public Astronaut alien;
+
+	public boolean isCrashing = false;
+
+	public Rectangle rec;
 
 	// Main method definition
 	// This is the code that runs first and automatically
@@ -63,6 +71,13 @@ public class BasicGameApp implements Runnable {
 		astroPic = Toolkit.getDefaultToolkit().getImage("astronaut.png"); //load the picture
 		astro = new Astronaut("astro",10,100); //construct the astronaut
 
+		alienPic = Toolkit.getDefaultToolkit().getImage("alien.png"); //load the picture
+		alien = new Astronaut("alien",800,400); //construct the astronaut
+
+		spacePic = Toolkit.getDefaultToolkit().getImage("Space.jpeg"); //load the picture
+
+
+		//Do the same as astroPic with new image
 	} // end BasicGameApp constructor
 
 
@@ -85,12 +100,30 @@ public class BasicGameApp implements Runnable {
 
 	public void moveThings() {
 		//calls the move( ) code in the objects
-		astro.move();
-
+		astro.bounce();
+		alien.bounce();
 	}
 
+	public void crash() {
+		// if astro and alien intersect they both bounce
+		if (astro.rec.intersects(alien.rec) && astro.isCrashing == false) {
+			System.out.println("CRASH");
+			astro.isCrashing = true;
+			astro.width = astro.width * 2;
+			astro.height = astro.height * 2;
+
+		}
+		if (!astro.rec.intersects(alien.rec)) { // reset astro.isCrashing to false if no longer intersecting
+			astro.isCrashing = false;
+
+		}
+	}
+
+
+
+
 	//Pauses or sleeps the computer for the amount specified in milliseconds
-	public void pause(int time ) {
+	void pause(int time ) {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
@@ -131,8 +164,13 @@ public class BasicGameApp implements Runnable {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 
+
+		//g.drawImage(Space.jpeg, 0, 0, WIDTH, HEIGHT, null);
+
 		//draw the image of the astronaut
+		g.drawImage(spacePic,0,0,WIDTH,HEIGHT,null);
 		g.drawImage(astroPic, astro.xpos, astro.ypos, astro.width, astro.height, null);
+		g.drawImage(alienPic, alien.xpos, alien.ypos, alien.width, alien.height, null);
 
 		g.dispose();
 		bufferStrategy.show();
