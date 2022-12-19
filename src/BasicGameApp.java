@@ -41,12 +41,15 @@ public class BasicGameApp implements Runnable {
 	public Image astroPic;
 	public Image alienPic;
 
+	public Image SunPic;
 	public Image spacePic;
 
 	//Declare the objects used in the program
 	//These are things that are made up of more than one variable type
 	private Astronaut astro;
 	public Astronaut alien;
+
+	public Astronaut Sun;
 
 	public boolean isCrashing = false;
 
@@ -74,7 +77,19 @@ public class BasicGameApp implements Runnable {
 		alienPic = Toolkit.getDefaultToolkit().getImage("alien.png"); //load the picture
 		alien = new Astronaut("alien",800,400); //construct the astronaut
 
+		SunPic = Toolkit.getDefaultToolkit().getImage("Sun-PNG-Picture.png"); //load the picture
+		Sun = new Astronaut("Sun",800,200);
+
+		Sun.xpos = 800;
+		Sun.ypos = 100;
+		Sun.dx = 0;
+		Sun.dy = 0;
+
 		spacePic = Toolkit.getDefaultToolkit().getImage("Space.jpeg"); //load the picture
+		if(astro.rec.intersects(alien.rec)){
+			astro.xpos= astro.xpos+100;
+			alien.xpos= astro.xpos-100;
+		}
 
 
 		//Do the same as astroPic with new image
@@ -93,33 +108,57 @@ public class BasicGameApp implements Runnable {
 		//for the moment we will loop things forever.
 		while (true) {
 			moveThings();  //move all the game objects
+			SunDoom();
+			crash();
 			render();  // paint the graphics
 			pause(20); // sleep for 10 ms
 		}
 	}
 
 	public void moveThings() {
+		//SunDoom();
+
 		//calls the move( ) code in the objects
 		astro.bounce();
 		alien.bounce();
+		astro.wrap();
+		alien.wrap();
+		Sun.move();
+      //  SunDoom();
 	}
 
 	public void crash() {
 		// if astro and alien intersect they both bounce
-		if (astro.rec.intersects(alien.rec) && astro.isCrashing == false) {
+		if (astro.rec.intersects(alien.rec) && alien.isCrashingAstro == false) {
 			System.out.println("CRASH");
-			astro.isCrashing = true;
+			alien.isCrashingAstro = true;
 			astro.width = astro.width * 2;
 			astro.height = astro.height * 2;
 
 		}
 		if (!astro.rec.intersects(alien.rec)) { // reset astro.isCrashing to false if no longer intersecting
-			astro.isCrashing = false;
+			alien.isCrashingAstro = false;
 
 		}
 	}
 
+	public void SunDoom() {
+		// if astro and sun collide astro dissapears
+		//System.out.println("AstroDoom 1");
+		if (astro.rec.intersects(Sun.rec) && astro.isCrashingSun == false) {
+			System.out.println("AstroDoom");
+			astro.isCrashingSun = true;
+			astro.width = 0;
+			astro.height = 0;
 
+
+
+		}
+		if (!astro.rec.intersects(Sun.rec)) { // reset astro.isCrashing to false if no longer intersecting
+			astro.isCrashingSun = false;
+
+		}
+	}
 
 
 	//Pauses or sleeps the computer for the amount specified in milliseconds
@@ -171,6 +210,8 @@ public class BasicGameApp implements Runnable {
 		g.drawImage(spacePic,0,0,WIDTH,HEIGHT,null);
 		g.drawImage(astroPic, astro.xpos, astro.ypos, astro.width, astro.height, null);
 		g.drawImage(alienPic, alien.xpos, alien.ypos, alien.width, alien.height, null);
+		g.drawImage(SunPic, Sun.xpos, Sun.ypos, Sun.width, Sun.height, null);
+
 
 		g.dispose();
 		bufferStrategy.show();

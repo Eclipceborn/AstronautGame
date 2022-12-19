@@ -14,7 +14,9 @@ public class Astronaut {
     public int dy;                    //the speed of the hero in the y direction
     public int width;                 //the width of the hero image
     public int height;                //the height of the hero image
-    public boolean isAlive,isCrashing;           //a boolean to denote if the hero is alive or dead
+    public boolean isAlive,isCrashingAstro;           //a boolean to denote if the hero is alive or dead
+
+    public boolean isAliveSun,isCrashingSun;           //a boolean to denote if the hero is alive or dead
     public Rectangle rec;
 
 
@@ -30,11 +32,12 @@ public class Astronaut {
         xpos = (int)(Math.random()*400+100);
         ypos = pYpos;
         ypos = (int)(Math.random()*150+50);
-        dx = 1;
-        dy = 1;
+        dx = 2;
+        dy = 2;
         width = 60;
         height = 60;
         isAlive = true;
+        rec= new Rectangle(xpos,ypos,width,height);
 
     } // end Astronaut constructor
 
@@ -42,6 +45,8 @@ public class Astronaut {
     public void move() { // move
         xpos = xpos + dx;
         ypos = ypos + dy;
+        rec= new Rectangle(xpos,ypos,width,height);
+
     }// end move
 
 
@@ -67,6 +72,8 @@ public class Astronaut {
             dy = -1 * dy;
 
         }
+        rec= new Rectangle(xpos,ypos,width,height);
+
     }
 
 
@@ -88,6 +95,7 @@ public class Astronaut {
         if (ypos >= 600) {// right wall
             ypos = -height;
         }
+        rec= new Rectangle(xpos,ypos,width,height);
 
     }
 
